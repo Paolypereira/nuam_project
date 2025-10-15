@@ -84,76 +84,36 @@ Usuario: profe
 
 Contraseña: profe1234
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 9️⃣ Ejecutar el servidor
+
 bash
+
 Copiar código
+
 python manage.py runserver
 
+
 🌐 Navegación del Proyecto
+
 Funcionalidad	URL	Descripción
+
 🏠 Inicio API	http://127.0.0.1:8000/	                                      Mensaje de bienvenida y rutas principales
+
 🔧 Panel Administrativo	http://127.0.0.1:8000/admin/	                      Administración de países, empresas, normativas y cargas masivas
+
 🌍 API REST	http://127.0.0.1:8000/api/	                                    Endpoints JSON para integraciones externas
+
 📘 Documentación Swagger	http://127.0.0.1:8000/api/docs/	                  Documentación interactiva de la API
+
 🧾 Página pública de empresas	http://127.0.0.1:8000/api/demo/empresas/	    Vista amigable del catálogo de empresas
 
+
 🧩 Estructura del proyecto
+
 php
+
 Copiar código
+
 nuam_project/
 │
 ├── mercados/                  # App principal (modelos, vistas, admin, serializers)
@@ -171,32 +131,54 @@ nuam_project/
 ├── README.md
 └── plantilla_carga_nuam.xlsx  # Plantilla editable para cargas futuras
 
+
 🧾 Carga masiva desde Excel
+
 Ingresar al panel administrativo
+
 → Mercados > Archivo carga masivas > Añadir.
 
 Subir un archivo Excel (con estructura similar a plantilla_carga_nuam.xlsx).
 
 Guardar y marcar como procesado.
 
+
 El sistema leerá automáticamente la hoja correcta (Nemo-Cap. Bur|Ticker-Market Cap)
+
 y actualizará las empresas en base a su ticker y país.
 
+
 🧠 Tecnologías utilizadas
+
 Python 3.11
+
 Django 5.2
+
 Django REST Framework (DRF)
+
 django-filter
+
 pandas
+
 openpyxl
+
 SQLite3
 
+
 🧑‍🏫 Credenciales para revisión docente
+
 Rol	Usuario	Contraseña
+
 Profesor / Revisor	profe	profe1234
 
+
 💬 Notas finales
+
 El proyecto se ejecuta localmente con DEBUG=True por lo que no requiere configuración adicional.
+
+
 El archivo db.sqlite3 incluye datos cargados de ejemplo.
+
 Se puede regenerar desde cero ejecutando los comandos de carga masiva.
+
 El panel administrativo y la API REST están completamente funcionales.
