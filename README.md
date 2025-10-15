@@ -6,49 +6,137 @@ Permite gestionar países, empresas, normativas y valores bursátiles, además d
 ---
 
 🚀 Instalación y Ejecución
+
 1️⃣ Clonar el repositorio
+
 bash
+
 git clone https://github.com/Paolypereira/nuam_project.git
+
 cd nuam_project
 
 2️⃣ Crear entorno virtual
+
 bash
 python -m venv .venv
 
 3️⃣ Activar el entorno virtual
 
 .\.venv\Scripts\activate
+
 En macOS / Linux:
 
 bash
+
 Copiar código
+
 source .venv/bin/activate
+
 4️⃣ Instalar dependencias
-bash
-Copiar código
-pip install -r requirements.txt
-5️⃣ Aplicar migraciones
-bash
-Copiar código
-python manage.py migrate
-6️⃣ Cargar países base (Chile, Colombia, Perú)
-bash
-Copiar código
-python manage.py cargar_paises
-7️⃣ Cargar datos desde Excel NUAM
-El repositorio incluye el archivo Informe_Bursátil_Regional_2025-08.xlsx
-También se entrega una plantilla_carga_nuam.xlsx para futuras cargas.
 
 bash
+
 Copiar código
-python manage.py seed_empresas --file "Informe_Bursátil_Regional_2025-08.xlsx"
-8️⃣ Crear superusuario (para el panel /admin/)
+
+pip install -r requirements.txt
+
+5️⃣ Aplicar migraciones
+
 bash
+
+
 Copiar código
+
+python manage.py migrate
+
+6️⃣ Cargar países base (Chile, Colombia, Perú)
+
+bash
+
+Copiar código
+
+python manage.py cargar_paises
+
+7️⃣ Cargar datos desde Excel NUAM
+
+El repositorio incluye el archivo Informe_Bursátil_Regional_2025-08.xlsx
+
+También se entrega una plantilla_carga_nuam.xlsx para futuras cargas.
+
+
+bash
+
+Copiar código
+
+python manage.py seed_empresas --file "Informe_Bursátil_Regional_2025-08.xlsx"
+
+8️⃣ Crear superusuario (para el panel /admin/)
+
+bash
+
+Copiar código
+
 python manage.py createsuperuser
+
 Usuario preconfigurado para revisión docente:
+
 Usuario: profe
+
 Contraseña: profe1234
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 9️⃣ Ejecutar el servidor
 bash
