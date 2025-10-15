@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>NUAM · Mantenedor de Empresas</title>
+
+  <!-- Tailwind por CDN (rápido para demo) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Scroll suave de tabla y cabecera pegajosa */
+    thead th { position: sticky; top: 0; background: #f8fafc; z-index: 10; }
+    .skeleton { background: linear-gradient(90deg,#eee 25%,#f5f5f5 37%,#eee 63%);
+                background-size: 400% 100%; animation: shimmer 1.4s ease infinite; }
+    @keyframes shimmer { 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <!-- Navbar -->
+  <header class="sticky top-0 z-50 backdrop-blur bg-white/80 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <h1 class="text-xl sm:text-2xl font-semibold tracking-tight">NUAM · Mantenedor de Empresas</h1>
+      <a href="/admin/" class="text-sm px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-100">Admin</a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-6">
+    <!-- Filtros -->
+    <section class="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+      <div class="sm:col-span-2">
+        <label class="block text-xs font-medium text-slate-500 mb-1">Buscar</label>
+        <input id="q" class="w-full rounded-xl border-slate-300 focus:ring-2 focus:ring-indigo-500" placeholder="Ticker, nombre, país…">
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-slate-500 mb-1">País</label>
+        <select id="pais" class="w-full rounded-xl border-slate-300">
+          <option value="">Todos</option>
+          <option>CHL</option><option>COL</option><option>PER</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-slate-500 mb-1">Moneda</label>
+        <select id="moneda" class="w-full rounded-xl border-slate-300">
+          <option value="">Todas</option>
+          <option>CLP</option><option>COP</option><option>PEN</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-slate-500 mb-1">Orden</label>
+        <select id="orden" class="w-full rounded-xl border-slate-300">
+          <option value="">Por defecto</option>
+          <option value="-capitalizacion">Cap. bursátil ↓</option>
+          <option value="capitalizacion">Cap. bursátil ↑</option>
+          <option value="nombre">Nombre ↑</option>
+          <option value="-nombre">Nombre ↓</option>
+          <option value="ticker">Ticker ↑</option>
+          <option value="-ticker">Ticker ↓</option>
+        </select>
+      </div>
+
+      <div class="flex items-end gap-2">
+        <button id="btnBuscar" class="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 w-full">Aplicar</button>
+        <button id="btnLimpiar" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-100 w-full">Limpiar</button>
+      </div>
+    </section>
+
+    <!-- Chips de filtros activos -->
+    <div id="chips" class="flex flex-wrap gap-2 mb-4"></div>
+
+    <!-- Tabla -->
+    <section class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="text-slate-600 uppercase text-xs">
+            <tr>
+              <th class="px-4 py-3 text-left">Ticker</th>
+              <th class="px-4 py-3 text-left">Nombre</th>
+              <th class="px-4 py-3 text-left">País</th>
+              <th class="px-4 py-3 text-left">Moneda</th>
+              <th class="px-4 py-3 text-left">Sector</th>
+              <th class="px-4 py-3 text-right">Cap. bursátil</th>
+            </tr>
+          </thead>
+          <tbody id="tbody" class="divide-y divide-slate-100">
+            <!-- filas -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer: paginación y contador -->
+      <div class="flex items-center justify-between px-4 py-3 bg-slate-50 border-t border-slate-200">
+        <p id="pageinfo" class="text-xs text-slate-600">—</p>
+        <div class="flex gap-2">
+          <button id="prev" class="px-3 py-1.5 rounded-xl border border-slate-300 hover:bg-slate-100 disabled:opacity-40">Anterior</button>
+          <button id="next" class="px-3 py-1.5 rounded-xl border border-slate-300 hover:bg-slate-100 disabled:opacity-40">Siguiente</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top por país (mini cards) -->
+    <section class="mt-8">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-lg font-semibold">Top por capitalización</h2>
+        <div class="flex gap-2">
+          <select id="topPais" class="rounded-xl border-slate-300">
+            <option value="">Global</option>
+            <option>CHL</option><option>COL</option><option>PER</option>
+          </select>
+          <select id="topN" class="rounded-xl border-slate-300">
+            <option>5</option><option>10</option><option>15</option>
+          </select>
+          <button id="btnTop" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white hover:bg-black">Actualizar</button>
+        </div>
+      </div>
+      <div id="topCards" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </section>
+  </main>
+
+<script>
+const API = "/api/empresas/";
+let nextUrl=null, prevUrl=null;
+
+const flags = { CHL:"🇨🇱", COL:"🇨🇴", PER:"🇵🇪" };
+
+const fmtNum = (n) => (n==null ? "—" : Number(n).toLocaleString("es-CL", {maximumFractionDigits:2}));
+const badge = (text, color="slate") =>
+  `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-${color}-100 text-${color}-800">${text}</span>`;
+
+function activeChips(params){
+  const chips = [];
+  if(params.get("search")) chips.push(badge("Buscar: "+params.get("search"), "indigo"));
+  if(params.get("pais__codigo")) chips.push(badge("País: "+params.get("pais__codigo"), "emerald"));
+  if(params.get("moneda")) chips.push(badge("Moneda: "+params.get("moneda"), "amber"));
+  if(params.get("ordering")) chips.push(badge("Orden: "+params.get("ordering"), "violet"));
+  document.getElementById("chips").innerHTML = chips.join(" ");
+}
+
+function buildUrl(){
+  const q=document.getElementById("q").value.trim();
+  const pais=document.getElementById("pais").value;
+  const moneda=document.getElementById("moneda").value;
+  const orden=document.getElementById("orden").value;
+  const params=new URLSearchParams();
+  if(q) params.set("search", q);
+  if(pais) params.set("pais__codigo", pais);
+  if(moneda) params.set("moneda", moneda);
+  if(orden) params.set("ordering", orden);
+  activeChips(params);
+  return API + (params.toString()?`?${params.toString()}`:"");
+}
+
+function rowTemplate(e){
+  const paisCode = e.pais_codigo ?? "";
+  return `
+    <tr class="hover:bg-slate-50">
+      <td class="px-4 py-3">
+        <a class="text-indigo-700 hover:underline font-medium" target="_blank" href="/api/empresas/${encodeURIComponent(e.ticker)}/">${e.ticker}</a>
+      </td>
+      <td class="px-4 py-3">${e.nombre ?? "—"}</td>
+      <td class="px-4 py-3">${paisCode ? `${flags[paisCode]??"🌐"} ${badge(paisCode,"emerald")}` : "—"}</td>
+      <td class="px-4 py-3">${e.moneda ? badge(e.moneda,"amber") : "—"}</td>
+      <td class="px-4 py-3">${e.sector ?? "—"}</td>
+      <td class="px-4 py-3 text-right tabular-nums">${fmtNum(e.capitalizacion)}</td>
+    </tr>`;
+}
+
+async function load(url){
+  // skeleton
+  const tbody=document.getElementById("tbody");
+  tbody.innerHTML = Array.from({length:10}).map(()=>`
+    <tr>
+      <td class="px-4 py-3"><div class="h-4 w-20 rounded skeleton"></div></td>
+      <td class="px-4 py-3"><div class="h-4 w-64 rounded skeleton"></div></td>
+      <td class="px-4 py-3"><div class="h-4 w-16 rounded skeleton"></div></td>
+      <td class="px-4 py-3"><div class="h-4 w-12 rounded skeleton"></div></td>
+      <td class="px-4 py-3"><div class="h-4 w-40 rounded skeleton"></div></td>
+      <td class="px-4 py-3 text-right"><div class="h-4 w-24 ml-auto rounded skeleton"></div></td>
+    </tr>`).join("");
+
+  const res = await fetch(url);
+  const data = await res.json();
+  const results = data.results ?? data;
+
+  // pintar filas
+  tbody.innerHTML = results.map(rowTemplate).join("") || `
+    <tr><td colspan="6" class="px-4 py-6 text-center text-slate-500">Sin resultados</td></tr>
+  `;
+
+  // paginación
+  nextUrl = data.next || null;
+  prevUrl = data.previous || null;
+  document.getElementById("prev").disabled = !prevUrl;
+  document.getElementById("next").disabled = !nextUrl;
+  document.getElementById("pageinfo").textContent =
+    data.count !== undefined ? `Mostrando ${results.length} de ${data.count} registros` : "";
+}
+
+function bindUI(){
+  document.getElementById("btnBuscar").addEventListener("click", ()=>load(buildUrl()));
+  document.getElementById("btnLimpiar").addEventListener("click", ()=>{
+    ["q","pais","moneda","orden"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("chips").innerHTML="";
+    load(API);
+  });
+  document.getElementById("next").addEventListener("click", ()=> nextUrl && load(nextUrl));
+  document.getElementById("prev").addEventListener("click", ()=> prevUrl && load(prevUrl));
+
+  document.getElementById("btnTop").addEventListener("click", loadTop);
+}
+
+async function loadTop(){
+  const pais = document.getElementById("topPais").value;
+  const n = document.getElementById("topN").value;
+  const url = `/api/top-empresas/?${new URLSearchParams({pais, n}).toString()}`;
+  const res = await fetch(url);
+  const { resultados } = await res.json();
+  const box = document.getElementById("topCards");
+  box.innerHTML = resultados.map((e, i)=>`
+    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div class="flex items-baseline justify-between">
+        <div class="text-sm text-slate-500">#${i+1}</div>
+        <div>${e.pais ? badge(e.pais,"emerald") : ""}</div>
+      </div>
+      <a class="block mt-1 text-lg font-semibold text-slate-800 hover:underline" href="/api/empresas/${encodeURIComponent(e.ticker)}/" target="_blank">${e.ticker}</a>
+      <div class="text-slate-600">${e.nombre ?? "—"}</div>
+      <div class="mt-2 flex items-center justify-between">
+        <div>${e.moneda ? badge(e.moneda,"amber") : ""}</div>
+        <div class="text-right">
+          <div class="text-xs text-slate-500">Cap. bursátil</div>
+          <div class="font-semibold tabular-nums">${fmtNum(e.capitalizacion)}</div>
+        </div>
+      </div>
+    </div>
+  `).join("") || `<div class="text-slate-500">Sin datos</div>`;
+}
+
+// init
+bindUI();
+load(API);
+loadTop();
+</script>
+</body>
+</html>

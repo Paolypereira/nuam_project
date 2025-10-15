@@ -2,18 +2,18 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>Calificaciones Tributarias</title>
+    <title>Mercados Tributarias</title>
     <style>
         table { width: 100%; border-collapse: collapse; }
         th, td { border: 1px solid black; padding: 8px; }
     </style>
 </head>
 <body>
-    <h1>Calificaciones Tributarias</h1>
+    <h1>Mercados Tributarias</h1>
 
     <h2>Agregar / Editar Calificación Tributaria</h2>
-    <form id="calificacion-form">
-        <input type="hidden" id="calificacion-id" />
+    <form id="mercados-form">
+        <input type="hidden" id="mercados-id" />
         <label>Tipo:</label><br/>
         <input type="text" id="tipo" required /><br/>
         <label>Monto:</label><br/>
@@ -32,7 +32,7 @@
         <button type="submit">Guardar</button>
     </form>
 
-    <table id="calificaciones-table">
+    <table id="mercados-table">
         <thead>
             <tr>
                 <th>ID</th><th>Tipo</th><th>Monto</th><th>Fecha</th><th>Acciones</th>
@@ -58,35 +58,35 @@
 
             if (id) {
                 // Actualizar
-                const response = await fetch(`/api/calificaciones/${id}/`, {
+                const response = await fetch(`/api/mercados/${id}/`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 });
                 if (response.ok) {
                     alert('Calificación actualizada con éxito');
-                    fetchCalificaciones();
+                    fetchMercados();
                     form.reset();
                 }
             } else {
                 // Crear
-                const response = await fetch('/api/calificaciones/', {
+                const response = await fetch('/api/mercados/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 });
                 if (response.ok) {
                     alert('Calificación creada con éxito');
-                    fetchCalificaciones();
+                    fetchMercados();
                     form.reset();
                 }
             }
         });
 
-        async function fetchCalificaciones() {
-            const response = await fetch('/api/calificaciones/');
+        async function fetchMercados() {
+            const response = await fetch('/api/mercados/');
             const data = await response.json();
-            const tbody = document.querySelector('#calificaciones-table tbody');
+            const tbody = document.querySelector('#mercados-table tbody');
             tbody.innerHTML = '';
             data.forEach(cal => {
                 const row = `<tr>
@@ -115,12 +115,12 @@
 
         async function eliminarCalificacion(id) {
             if (confirm('¿Está seguro de eliminar esta calificación?')) {
-                const response = await fetch(`/api/calificaciones/${id}/`, {
+                const response = await fetch(`/api/mercados/${id}/`, {
                     method: 'DELETE',
                 });
                 if (response.ok) {
                     alert('Calificación eliminada');
-                    fetchCalificaciones();
+                    fetchMercados();
                     form.reset();
                 } else {
                     alert('Error al eliminar');
@@ -128,7 +128,7 @@
             }
         }
 
-        fetchCalificaciones();
+        fetchMercados();
     </script>
 </body>
 </html>
