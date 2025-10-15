@@ -115,21 +115,37 @@ php
 Copiar código
 
 nuam_project/
+
 │
+
 ├── mercados/                  # App principal (modelos, vistas, admin, serializers)
+
 │   ├── models.py
+
 │   ├── views.py
+
 │   ├── serializers.py
+
 │   ├── admin.py
+
 │   └── utils_import.py        # Script de carga automática de Excel
+
 │
+
 ├── templates/                 # Plantillas HTML (vista demo)
+
 ├── static/                    # Estilos y assets
+
 ├── db.sqlite3                 # Base de datos local con datos de ejemplo
+
 ├── manage.py
+
 ├── requirements.txt
+
 ├── README.md
+
 └── plantilla_carga_nuam.xlsx  # Plantilla editable para cargas futuras
+
 
 
 🧾 Carga masiva desde Excel
