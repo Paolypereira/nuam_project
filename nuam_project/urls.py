@@ -1,23 +1,26 @@
 from django.contrib import admin
 from django.urls import path, include
-from mercados.views import home   # <-- importar
-from django.contrib import admin
-from django.urls import path, include
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from mercados.views import (
+    home,
+    mer_view,
+    demo_empresas,
+    empresas_sin_paginacion,
+)
+from django.http import HttpResponseRedirect
+from django.conf import settings
+
+
+# Redirección para el botón "Ver sitio"
+def redirect_to_site(request):
+    return HttpResponseRedirect(settings.ADMIN_SITE_URL)
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('mercados.urls')),
-    path('', home, name='home'),  # <-- ya funciona
-]
-
-urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("ver-sitio/", redirect_to_site, name="ver-sitio"),  # 👈 Nueva ruta
+    path("", home, name="home"),
+    path("catalogo/", demo_empresas, name="catalogo"),
+    path("catalogo-data/", empresas_sin_paginacion, name="catalogo-data"),
+    path("mer/", mer_view, name="mer"),
     path("api/", include("mercados.urls")),
-
-    # OpenAPI schema
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    # Docs
-    path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
-    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    path("admin/", admin.site.urls),
 ]

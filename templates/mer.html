@@ -1,0 +1,98 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title|default:"Diagrama NUAM (M.E.R.)" }}</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      background:#0f172a;
+      color:#e2e8f0;
+      text-align:center;
+      padding:2rem 1rem 4rem;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    h1 {
+      font-size:1.6rem;
+      font-weight:600;
+      color:#f8fafc;
+      margin-bottom:.5rem;
+      text-align:center;
+    }
+
+    p.desc {
+      color:#94a3b8;
+      font-size:1rem;
+      margin:0 0 1.5rem;
+      text-align:center;
+    }
+
+    img {
+      max-width:100%;
+      height:auto;
+      border-radius:10px;
+      box-shadow:0 12px 30px rgba(0,0,0,.4);
+      cursor:zoom-in;
+      transition:transform .2s ease;
+      transform-origin:center;
+    }
+
+    .hint {
+      color:#94a3b8;
+      font-size:.8rem;
+      margin-top:1rem;
+      text-align:center;
+      line-height:1.4;
+    }
+
+    .back {
+      display:inline-block;
+      margin-top:1.5rem;
+      color:#38bdf8;
+      font-size:.95rem;
+      text-decoration:none;
+    }
+
+    .back:hover {
+      text-decoration:underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Diagrama NUAM (M.E.R.)</h1>
+  <p class="desc">Modelo entidad–relación del sistema NUAM</p>
+
+  <img src="{% static 'diagramas/nuam_mer.png' %}" alt="Diagrama entidad–relación NUAM" id="zoomable">
+
+  <div class="hint">
+    Usa la rueda del mouse / trackpad para hacer zoom sobre el diagrama.
+  </div>
+
+  <a class="back" href="{% url 'home' %}">← Volver al inicio</a>
+
+  <script>
+    const img = document.getElementById("zoomable");
+    let scale = 1;
+
+    img.addEventListener("wheel", e => {
+      e.preventDefault();
+      if (e.deltaY < 0) scale *= 1.1;   // Scroll arriba: acercar
+      else scale /= 1.1;                // Scroll abajo: alejar
+
+      // límites para evitar que se rompa
+      if (scale < 0.3) scale = 0.3;
+      if (scale > 8) scale = 8;
+
+      img.style.transform = `scale(${scale})`;
+    });
+  </script>
+
+</body>
+</html>

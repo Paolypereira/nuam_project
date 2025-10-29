@@ -8,6 +8,8 @@ router.register(r"paises", PaisViewSet, basename="pais")
 
 urlpatterns = [
     path("top-empresas/", TopEmpresasPorPais.as_view(), name="top-empresas"),
-    path("demo/empresas/", demo_empresas, name="demo-empresas"),  # 👈
+    path("demo/empresas/", demo_empresas, name="demo-empresas"),  # página HTML con JS
 ]
+
+# Incluir rutas de la API generadas automáticamente
 urlpatterns += router.urls

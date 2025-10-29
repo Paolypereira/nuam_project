@@ -1,47 +1,52 @@
-# mercados/views.py
-from django.http import JsonResponse
+from django.shortcuts import render
 from django.db.models import F
-
 from rest_framework import viewsets, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from rest_framework.decorators import api_view
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Pais, Empresa
 from .serializers import PaisSerializer, EmpresaSerializer
 
-from django.shortcuts import render
 
+# HOME (landing con tarjetas)
 def home(request):
-    return JsonResponse({
-        "message": "API NUAM – integración bursátil Chile, Colombia, Perú",
-        "endpoints": {
+    return render(request, "home.html", {
+        "title": "NUAM – Mantenedor & API",
+        "links": {
+            "catalogo": "/catalogo/",
             "admin": "/admin/",
-            "api": "/api/",
-            "top-empresas": "/api/top-empresas/?pais=CHL&n=5"
+            "mer": "/mer/",
         }
     })
 
 
-# -------------------------------
-# Empresas (CRUD + filtros)
-# -------------------------------
+# CATÁLOGO EMPRESAS (frontend que lista empresas)
+def demo_empresas(request):
+    return render(request, "empresas.html", {
+        "title": "Catálogo de Empresas"
+    })
+
+
+# DIAGRAMA NUAM (M.E.R.)
+def mer_view(request):
+    return render(request, "mer.html", {
+        "title": "Diagrama NUAM (M.E.R.)"
+    })
+
+
+# -------- API REST principal (DRF con paginación) --------
 class EmpresaViewSet(viewsets.ModelViewSet):
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializer
 
-    # búsqueda, orden y filtros exactos
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
     search_fields = ["ticker", "nombre", "pais__codigo", "sector", "moneda", "mercado"]
     ordering_fields = ["ticker", "nombre", "capitalizacion"]
     ordering = ["ticker"]
-    lookup_field = "ticker"  # /api/empresas/{TICKER}/
+    lookup_field = "ticker"
 
-    # filtros por querystring:
-    # ?pais__codigo=CHL
-    # ?pais__codigo__in=CHL,COL
-    # ?moneda=CLP
     filterset_fields = {
         "pais__codigo": ["exact", "in"],
         "moneda": ["exact", "in"],
@@ -49,19 +54,12 @@ class EmpresaViewSet(viewsets.ModelViewSet):
     }
 
 
-# -------------------------------
-# Países (solo lectura)
-# -------------------------------
 class PaisViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Pais.objects.all()
     serializer_class = PaisSerializer
     lookup_field = "codigo"
 
 
-# -------------------------------
-# Resumen: Top empresas por país
-# GET /api/top-empresas/?pais=CHL&n=5
-# -------------------------------
 class TopEmpresasPorPais(APIView):
     def get(self, request):
         pais = request.GET.get("pais")
@@ -89,5 +87,35 @@ class TopEmpresasPorPais(APIView):
         return Response({"pais": pais, "n": n, "resultados": data})
 
 
-def demo_empresas(request):
-    return render(request, "mercados/empresas.html")
+# -------- Endpoint SIN paginación para el front /catalogo-data/ --------
+@api_view(["GET"])
+def empresas_sin_paginacion(request):
+    """
+    Devuelve TODAS las empresas en una sola lista simple, sin paginación,
+    ordenadas por ticker. Esta es la que consume /catalogo/.
+    """
+    qs = (
+        Empresa.objects
+        .all()
+        .order_by("ticker")
+        .values(
+            "ticker",
+            "nombre",
+            "moneda",
+            "capitalizacion",
+            "pais__codigo",
+        )
+    )
+
+    data = [
+        {
+            "ticker": row["ticker"],
+            "nombre": row["nombre"],
+            "pais": row["pais__codigo"],
+            "moneda": row["moneda"],
+            "capitalizacion": float(row["capitalizacion"]) if row["capitalizacion"] is not None else None,
+        }
+        for row in qs
+    ]
+
+    return Response(data)

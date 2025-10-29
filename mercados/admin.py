@@ -148,4 +148,4 @@ class ValorInstrumentoAdmin(admin.ModelAdmin):
 admin.site.site_header = "Administración NUAM"
 admin.site.site_title = "NUAM Admin"
 admin.site.index_title = "Panel de control NUAM"
-admin.site.site_url = "/api/demo/empresas/"
+admin.site.site_url = "http://127.0.0.1:8000/"
