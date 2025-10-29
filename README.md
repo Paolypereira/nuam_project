@@ -41,6 +41,7 @@ source .venv/bin/activate
 En Windows, si aparece un error de permisos al activar el entorno virtual, ejecuta PowerShell como **Administrador** una sola vez y usa el comando:
 `Set-ExecutionPolicy RemoteSigned`
 Luego puedes seguir los pasos normalmente.
+Y como recomendadión utiliza cmd
 
 3️⃣ Instalar dependencias
 cd nuam_project
