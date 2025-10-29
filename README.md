@@ -28,7 +28,7 @@ Antes de comenzar, asegúrate de tener instalado:
 ```bash
 git clone https://github.com/Paolypereira/nuam_project.git
 
-cd nuam_project/nuam_project
+cd nuam_project
 
 2️⃣ Crear entorno virtual
 🪟 En Windows PowerShell
