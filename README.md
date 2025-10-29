@@ -37,7 +37,13 @@ python -m venv .venv
 python3 -m venv .venv
 source .venv/bin/activate
 
+⚠️ Nota:
+En Windows, si aparece un error de permisos al activar el entorno virtual, ejecuta PowerShell como **Administrador** una sola vez y usa el comando:
+`Set-ExecutionPolicy RemoteSigned`
+Luego puedes seguir los pasos normalmente.
+
 3️⃣ Instalar dependencias
+cd nuam_project
 pip install -r requirements.txt
 
 4️⃣ Aplicar migraciones de base de datos
@@ -48,34 +54,47 @@ python manage.py cargar_paises
 
 6️⃣ Cargar datos bursátiles desde Excel
 
-Asegúrate de tener el archivo Informe_Bursátil_Regional_2025-08.xlsx en la raíz del proyecto.
-Luego ejecuta:
+El archivo de datos bursátiles se encuentra dentro del proyecto, en la carpeta:
 
-python manage.py seed_empresas --file "Informe_Bursátil_Regional_2025-08.xlsx"
+nuam_project\cargas\2025\10\Informe_Bursátil_Regional_2025-08.xlsx
 
+🧩 Paso a paso
 
-Esto leerá automáticamente la hoja “Nemo-Cap. Bur|Ticker-Market Cap” y creará las empresas en el sistema.
+    1️⃣ Abre la carpeta del proyecto en Visual Studio Code o en la terminal.
 
-7️⃣ Crear usuario administrador
-python manage.py createsuperuser
+    2️⃣ Confirma que la ruta del archivo existe. En Windows, puedes copiar la ruta completa desde el Explorador de Archivos:
 
+    Haz clic derecho sobre el archivo → “Copiar como ruta”
 
-🧩 Usuario sugerido para evaluación
+    Pégala entre comillas en el siguiente comando.
 
-usuario: profe
-contraseña: profe1234
+    3️⃣ Ejecuta el comando en la terminal (reemplazando si es necesario la ruta según tu usuario):
 
-8️⃣ Ejecutar el servidor de desarrollo
+    python manage.py seed_empresas --file "C:\Users\alumnosnunoa\nuam_project\cargas\2025\10\Informe_Bursátil_Regional_2025-08.xlsx"
+
+    4️⃣ Si el archivo está en una ruta distinta, usa la ruta que copiaste en el paso 2.
+
+    5️⃣ El sistema detectará automáticamente la hoja Nemo-Cap. Bur|Ticker-Market Cap y mostrará un resultado similar a:
+
+    ✅ Empresas creadas: 0, actualizadas: 159, omitidas: 72
+
+    Esto significa que los datos fueron importados correctamente a la base de datos.
+
+    
+
+7️⃣ Ejecutar el servidor de desarrollo
 Windows:
 python manage.py runserver
 
 Linux / Ubuntu:
 python3 manage.py runserver
 
-
-Luego abre tu navegador en:
+8️⃣ Luego abre tu navegador en:
 👉 http://127.0.0.1:8000/
 
+🧩 Usuario sugerido 
+usuario: profe
+contraseña: profe1234
 
 🖥️ Interfaz principal
 
@@ -155,7 +174,6 @@ Desarrollado por el equipo de estudiantes de Analista Programador - INACAP
     -   Paola Pereira
 
 
-
 🧾 Ejemplo de ejecución rápida (Linux)
 git clone https://github.com/Paolypereira/nuam_project.git
 cd nuam_project/nuam_project
@@ -165,10 +183,7 @@ pip install -r requirements.txt
 python3 manage.py migrate
 python3 manage.py cargar_paises
 python3 manage.py seed_empresas --file "Informe_Bursátil_Regional_2025-08.xlsx"
-python3 manage.py createsuperuser
 python3 manage.py runserver
-
-
 Luego abrir:
 👉 http://127.0.0.1:8000/
 
