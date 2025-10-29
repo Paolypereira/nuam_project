@@ -43,7 +43,6 @@ En Windows, si aparece un error de permisos al activar el entorno virtual, ejecu
 Luego puedes seguir los pasos normalmente.
 
 3️⃣ Instalar dependencias
-cd nuam_project
 pip install -r requirements.txt
 
 4️⃣ Aplicar migraciones de base de datos
